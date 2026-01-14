@@ -1191,3 +1191,18 @@ footer {
         display: block;   /* 모바일에서는 한 줄씩 나오게 설정 */
     }
 }
+
+/* 내비게이션 링크 기본 스타일 */
+.nav-links li a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+/* 마우스를 올렸을 때나 활성화된 페이지 스타일 */
+.nav-links li a:hover,
+.nav-links li a.active {
+    color: #2563eb; /* 벤처플랫폼 포인트 컬러 */
+    font-weight: 700;
+}
