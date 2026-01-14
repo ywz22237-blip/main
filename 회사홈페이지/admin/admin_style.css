@@ -1,0 +1,462 @@
+/* 1. 초기화 및 기본 폰트 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Pretendard', -apple-system, system-ui, sans-serif;
+}
+
+body {
+    background-color: #f0f2f5;
+    color: #333;
+}
+
+.admin-wrapper {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* 2. 사이드바 디자인 */
+.sidebar {
+    width: 260px;
+    background-color: #1a202c;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 30px;
+    text-align: center;
+    border-bottom: 1px solid #2d3748;
+}
+
+.sidebar-header h2 {
+    color: #4299e1;
+    letter-spacing: 2px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 20px 0;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+}
+
+.sidebar-nav ul li a {
+    display: block;
+    padding: 15px 30px;
+    color: #a0aec0;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.sidebar-nav ul li a:hover, .sidebar-nav ul li a.active {
+    background-color: #2d3748;
+    color: #fff;
+    border-left: 4px solid #4299e1;
+}
+
+.sidebar-footer {
+    padding: 20px;
+    border-top: 1px solid #2d3748;
+}
+
+.btn-exit {
+    display: block;
+    text-align: center;
+    padding: 12px;
+    background-color: #4a5568;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+/* 3. 메인 콘텐츠 영역 */
+.main-content {
+    margin-left: 260px; /* 사이드바 너비만큼 띄우기 */
+    flex: 1;
+    padding: 40px;
+}
+
+.top-header {
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 4. 대시보드 카드 */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    border-top: 5px solid #cbd5e0;
+}
+
+.stat-card.blue { border-top-color: #4299e1; }
+.stat-card.green { border-top-color: #48bb78; }
+.stat-card.orange { border-top-color: #ed8936; }
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #718096;
+    margin-bottom: 10px;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2d3748;
+}
+
+/* 5. 테이블 섹션 */
+.section-title {
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.table-container {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 15px 20px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+th {
+    background-color: #f8fafc;
+    color: #718096;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+/* 6. 상태 배지 */
+.badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge.success { background-color: #c6f6d5; color: #22543d; }
+.badge.warning { background-color: #feebc8; color: #744210; }
+
+/* 파트너사 전용 표 스타일 */
+.partner-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.partner-table th {
+    background-color: #f8fafc;
+    color: #4a5568;
+    font-weight: 600;
+    padding: 15px;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.partner-table td {
+    padding: 15px;
+    vertical-align: middle;
+    border-bottom: 1px solid #edf2f7;
+    color: #2d3748;
+}
+
+/* 표 내부 이미지 박스 */
+.table-img-box {
+    width: 100px;
+    height: 50px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.table-img-box img {
+    max-width: 90%;
+    max-height: 90%;
+    object-fit: contain;
+}
+
+/* 삭제 버튼 디자인 */
+.btn-table-delete {
+    background-color: #fff5f5;
+    color: #c53030;
+    border: 1px solid #feb2b2;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+
+.btn-table-delete:hover {
+    background-color: #c53030;
+    color: white;
+}
+
+/* 입력 폼 너비 조정 */
+.form-container {
+    max-width: 100%; /* 표와 너비를 맞춤 */
+}
+
+/* 표 내부 입력창 스타일 */
+.table-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    outline: none;
+}
+
+.table-input:focus {
+    border-color: #4299e1;
+}
+
+/* 표 내부 로고 업로드 박스 */
+.table-upload-box {
+    width: 140px;
+    height: 60px;
+    background: #f8fafc;
+    border: 1px dashed #cbd5e0;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.table-upload-box:hover {
+    background: #ebf8ff;
+    border-color: #4299e1;
+}
+
+.preview-zone span {
+    font-size: 0.75rem;
+    color: #a0aec0;
+}
+
+/* 하단 버튼 영역 */
+.table-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-add-row {
+    background-color: #edf2f7;
+    color: #2d3748;
+    border: 1px solid #cbd5e0;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-add-row:hover {
+    background-color: #e2e8f0;
+}
+
+.btn-save-all {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+/* 뉴스 페이지 전용 추가 스타일 */
+.text-muted {
+    color: #718096;
+    font-size: 0.85rem;
+}
+
+/* 수정 버튼 디자인 */
+.btn-table-edit {
+    background-color: #ebf8ff;
+    color: #3182ce;
+    border: 1px solid #90cdf4;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-right: 5px;
+    transition: 0.2s;
+}
+
+.btn-table-edit:hover {
+    background-color: #3182ce;
+    color: white;
+}
+
+/* 기존 삭제 버튼과 크기 통일 */
+.btn-table-delete {
+    padding: 6px 12px;
+    font-weight: bold;
+}
+
+/* 작성/수정 폼 관련 추가 스타일 */
+.btn-cancel {
+    padding: 12px 25px;
+    background-color: #edf2f7;
+    color: #4a5568;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.btn-cancel:hover {
+    background-color: #e2e8f0;
+}
+
+.text-muted {
+    font-size: 0.8rem;
+    color: #a0aec0;
+}
+
+/* 업로드 박스 크기 조정 */
+#newsPreview {
+    min-height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 확장된 뉴스 폼 스타일 */
+.large-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.input-lg {
+    width: 100%;
+    padding: 15px; /* 크기 키움 */
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    background-color: #f8fafc;
+}
+
+.input-lg:focus {
+    border-color: #4299e1;
+    background-color: #fff;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.input-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 2fr; /* 링크 입력란을 더 넓게 */
+    gap: 20px;
+}
+
+.upload-box-lg {
+    border: 2px dashed #cbd5e0;
+    padding: 60px; /* 박스 크기 대폭 확대 */
+    text-align: center;
+    border-radius: 12px;
+    background: #f8fafc;
+    cursor: pointer;
+}
+
+.link-text {
+    color: #3182ce;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.form-actions-lg {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.btn-save-lg {
+    padding: 15px 40px;
+    background-color: #2b6cb0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-cancel-lg {
+    padding: 15px 30px;
+    background-color: #edf2f7;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+}
+
+/* 문의 상세 보기 전용 스타일 */
+.unread {
+    background-color: #fffaf0; /* 미확인 문의는 연한 배경색 */
+}
+
+.contact-detail-box {
+    background: #f8fafc;
+    padding: 30px;
+    border-radius: 12px;
+}
+
+.detail-row {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.detail-item strong {
+    color: #718096;
+    margin-right: 5px;
+}
+
+.message-text {
+    margin-top: 10px;
+    padding: 20px;
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    min-height: 150px;
+    white-space: pre-wrap; /* 줄바꿈 유지 */
+    line-height: 1.6;
+}
