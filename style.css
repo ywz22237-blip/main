@@ -873,31 +873,33 @@ footer {
     .funnel-row { justify-content: center; }
 }
 
-/* 작성/수정 폼 관련 추가 스타일 */
-.btn-cancel {
-    padding: 12px 25px;
-    background-color: #edf2f7;
-    color: #4a5568;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    margin-right: 10px;
+/* 파트너 섹션 스타일 */
+.partners-section {
+    padding: 60px 0;
+    background-color: #fff;
+    text-align: center;
 }
 
-.btn-cancel:hover {
-    background-color: #e2e8f0;
-}
-
-.text-muted {
-    font-size: 0.8rem;
-    color: #a0aec0;
-}
-
-/* 업로드 박스 크기 조정 */
-#newsPreview {
-    min-height: 100px;
-    display: flex;
+.partner-grid {
+    display: grid;
+    /* 한 줄에 4개씩 배치 (모바일에서는 자동으로 조절됨) */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
     align-items: center;
-    justify-content: center;
+    justify-items: center;
+    margin-top: 40px;
+}
+
+.partner-item img {
+    max-width: 160px; /* 로고 크기 조절 */
+    height: auto;
+    filter: grayscale(100%); /* 모든 로고를 회색조로 통일 (고급스러운 느낌) */
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.partner-item img:hover {
+    filter: grayscale(0%); /* 마우스 올리면 컬러로 변경 */
+    opacity: 1;
+    transform: scale(1.05); /* 약간 커지는 효과 */
 }
