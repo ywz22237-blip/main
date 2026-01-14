@@ -1007,3 +1007,113 @@ footer {
     font-weight: 600;
     margin-bottom: 8px;
 }
+
+/* 뉴스 섹션 전체 배경 */
+.news-section {
+    padding: 100px 0; /* 위아래 여백을 더 넉넉히 */
+    background-color: #fcfcfc;
+}
+
+/* 뉴스 리스트 컨테이너 (너비 확장) */
+.news-list {
+    max-width: 1200px;    /* 기존 1000px에서 1200px로 확장 */
+    margin: 0 auto;
+    padding: 0 40px;
+}
+
+/* 개별 뉴스 항목 카드 (크기 및 여백 확장) */
+.news-item {
+    position: relative;
+    display: flex;
+    gap: 50px;            /* 이미지와 본문 사이 간격 키움 */
+    padding: 50px;        /* 박스 내부 여백을 더 크게 */
+    margin-bottom: 40px;  /* 항목 간 간격 키움 */
+    background-color: #ffffff;
+    border: 1px solid #eee;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.news-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+}
+
+/* 이미지 박스 크기 키움 */
+.news-image {
+    flex: 0 0 320px;      /* 이미지 가로 크기를 320px로 확장 */
+    height: 200px;        /* 높이도 200px로 확장 */
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    overflow: hidden;
+}
+
+.news-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; /* 로고 형태이므로 짤리지 않게 설정 */
+    padding: 15px;
+}
+
+/* 뉴스 본문 영역 */
+.news-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding-bottom: 30px; /* 하단 출처 공간 확보 */
+}
+
+/* 뉴스 제목 폰트 키움 */
+.news-title {
+    font-size: 1.5rem;    /* 폰트 크기 확대 */
+    font-weight: 700;
+    line-height: 1.4;
+    margin-bottom: 20px;
+    color: #111;
+    word-break: keep-all;
+}
+
+/* 뉴스 요약 폰트 키움 */
+.news-excerpt {
+    font-size: 1.1rem;    /* 폰트 크기 확대 */
+    color: #555;
+    line-height: 1.7;
+    margin-bottom: 25px;
+}
+
+/* 출처:관리자 오른쪽 하단 고정 */
+.news-author {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    font-size: 0.95rem;   /* 글자 크기 살짝 키움 */
+    color: #aaa;
+    white-space: nowrap;
+}
+
+/* 원문 보기 버튼 스타일 */
+.btn-more {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2563eb;
+    text-decoration: none;
+    margin-top: auto;
+}
+
+/* 모바일 대응 */
+@media (max-width: 992px) {
+    .news-list {
+        max-width: 100%;
+    }
+    .news-item {
+        flex-direction: column;
+        gap: 30px;
+        padding: 30px;
+    }
+    .news-image {
+        flex: 0 0 auto;
+        width: 100%;
+        height: 240px;
+    }
+}
