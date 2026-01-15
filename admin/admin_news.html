@@ -5,27 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News 관리 - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="admin-wrapper">
         <aside class="sidebar">
             <div class="sidebar-header"><h2>ADMIN</h2></div>
-<nav class="sidebar-nav">
-    <ul>
-        <li><a href="index_admin.html">📊 대시보드</a></li>
-        <li><a href="admin_about.html">ℹ️ About 관리</a></li>
-        <li><a href="admin_service.html">🛠 Service 관리</a></li>
-        <li><a href="admin_news.html">📰 News 관리</a></li>
-        <li><a href="admin_contact.html">📞 Contact 관리</a></li>
-    </ul>
-</nav>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index_admin.html">📊 대시보드</a></li>
+                    <li><a href="admin_about.html">ℹ️ About 관리</a></li>
+                    <li><a href="admin_service.html">🛠 Service 관리</a></li>
+                    <li><a href="admin_news.html">📰 News 관리</a></li>
+                    <li><a href="admin_contact.html">📞 Contact 관리</a></li>
+                </ul>
+            </nav>
             <div class="sidebar-footer"><a href="../index.html" class="btn-exit">🏠 사이트 나가기</a></div>
         </aside>
 
         <main class="main-content">
             <header class="top-header">
                 <h1>News 관리</h1>
-                <div class="user-info">소식을 관리하고 링크를 연동하세요.</div>
+                <div class="user-info">소식을 관리하고 실시간으로 서버에 저장하세요.</div>
             </header>
 
             <section class="admin-card-section">
@@ -41,21 +42,8 @@
                                 <th>관리</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td><div class="table-img-box"><img src="https://via.placeholder.com/100x60" alt="news"></div></td>
-                                <td>
-                                    <strong>공식 웹사이트 리뉴얼</strong><br>
-                                    <small class="text-muted">더 편리해진 서비스를 만나보세요</small>
-                                </td>
-                                <td>관리자<br><small>2024-05-20</small></td>
-                                <td><a href="https://example.com" target="_blank" class="link-text">방문하기 🔗</a></td>
-                                <td>
-                                    <button class="btn-table-edit" onclick="showForm('edit', '공식 웹사이트 리뉴얼', '더 편리해진 서비스를 만나보세요', '관리자', '2024-05-20', 'https://example.com')">수정</button>
-                                    <button class="btn-table-delete">삭제</button>
-                                </td>
-                            </tr>
-                        </tbody>
+                        <tbody id="newsTableBody">
+                            </tbody>
                     </table>
                 </div>
                 <div class="table-actions" style="justify-content: flex-end; margin-top: 15px;">
@@ -66,7 +54,7 @@
             <section id="newsFormSection" class="admin-card-section" style="display: none; border-top: 4px solid #4299e1;">
                 <div class="section-title" id="formTitle">➕ 새 뉴스 작성</div>
                 <form id="newsForm" class="large-form">
-                    <div class="input-group">
+                    <input type="hidden" id="editId"> <div class="input-group">
                         <label>뉴스 제목</label>
                         <input type="text" id="newsTitle" class="input-lg" placeholder="뉴스 제목을 입력하세요" required>
                     </div>
@@ -96,14 +84,14 @@
                         <div class="upload-box-lg" onclick="document.getElementById('newsFile').click()">
                             <input type="file" id="newsFile" accept="image/*" hidden onchange="previewNewsImage(this)">
                             <div id="newsPreview">
-                                <span>이곳을 클릭하여 이미지를 업로드하세요 (권장: 800x400)</span>
+                                <span>이곳을 클릭하여 이미지를 업로드하세요</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-actions-lg">
                         <button type="button" class="btn-cancel-lg" onclick="hideForm()">창 닫기</button>
-                        <button type="submit" class="btn-save-lg">뉴스 저장하기</button>
+                        <button type="submit" class="btn-save-lg">서버에 저장하기</button>
                     </div>
                 </form>
             </section>
@@ -111,24 +99,95 @@
     </div>
 
     <script>
+        // 2. Supabase 설정 (본인의 정보로 교체하세요)
+        const SUPABASE_URL = 'https://vhmihojfcokhkoxpejuj.supabase.com'; 
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg'; // 찾으신 anon key를 여기에 입력
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
         const formSection = document.getElementById('newsFormSection');
         const formTitle = document.getElementById('formTitle');
+        let currentImgData = ""; // 이미지 미리보기 데이터 저장용
 
-        function showForm(mode, title='', sub='', author='관리자', date='', link='') {
-            formSection.style.display = 'block';
-            if(mode === 'add') {
-                formTitle.innerText = "➕ 새 뉴스 작성";
-                document.getElementById('newsForm').reset();
-                document.getElementById('newsPreview').innerHTML = "<span>이곳을 클릭하여 이미지를 업로드하세요</span>";
-            } else {
-                formTitle.innerText = "✏️ 뉴스 내용 수정";
-                document.getElementById('newsTitle').value = title;
-                document.getElementById('newsSubTitle').value = sub;
-                document.getElementById('newsAuthor').value = author;
-                document.getElementById('newsDate').value = date;
-                document.getElementById('newsLink').value = link;
+        // 3. 페이지 로드 시 데이터 불러오기
+        document.addEventListener('DOMContentLoaded', loadNews);
+
+        async function loadNews() {
+            const { data: newsList, error } = await _supabase
+                .from('news_table')
+                .select('*')
+                .order('created_at', { ascending: false });
+
+            if (error) {
+                console.error('로드 실패:', error);
+                return;
             }
-            // 폼이 있는 아래쪽으로 부드럽게 스크롤
+
+            const tbody = document.getElementById('newsTableBody');
+            tbody.innerHTML = '';
+
+            newsList.forEach((news) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td><div class="table-img-box"><img src="${news.img_url || 'https://via.placeholder.com/100x60'}"></div></td>
+                        <td><strong>${news.title}</strong><br><small class="text-muted">${news.sub_title}</small></td>
+                        <td>${news.author}<br><small>${news.date}</small></td>
+                        <td><a href="${news.link_url}" target="_blank" class="link-text">방문하기 🔗</a></td>
+                        <td>
+                            <button class="btn-table-delete" onclick="deleteNews('${news.id}')">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 4. 저장 기능 (추가/수정 통합)
+        document.getElementById('newsForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const newsData = {
+                title: document.getElementById('newsTitle').value,
+                sub_title: document.getElementById('newsSubTitle').value,
+                author: document.getElementById('newsAuthor').value,
+                date: document.getElementById('newsDate').value,
+                link_url: document.getElementById('newsLink').value,
+                img_url: currentImgData || 'https://via.placeholder.com/400x200'
+            };
+
+            const { data, error } = await _supabase
+                .from('news_table')
+                .insert([newsData]);
+
+            if (error) {
+                alert('저장 실패: ' + error.message);
+            } else {
+                alert('서버에 안전하게 저장되었습니다!');
+                hideForm();
+                loadNews();
+            }
+        });
+
+        // 5. 삭제 기능
+        async function deleteNews(id) {
+            if(!confirm('정말 삭제하시겠습니까? 데이터가 서버에서 영구 삭제됩니다.')) return;
+            
+            const { error } = await _supabase
+                .from('news_table')
+                .delete()
+                .eq('id', id);
+
+            if (error) {
+                alert('삭제 실패');
+            } else {
+                loadNews();
+            }
+        }
+
+        // --- UI 제어 함수들 ---
+        function showForm(mode) {
+            formSection.style.display = 'block';
+            document.getElementById('newsForm').reset();
+            currentImgData = "";
+            document.getElementById('newsPreview').innerHTML = "<span>이미지 업로드</span>";
             formSection.scrollIntoView({ behavior: 'smooth' });
         }
 
@@ -141,79 +200,12 @@
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
                 reader.onload = function(e) {
-                    preview.innerHTML = `<img src="${e.target.result}" style="max-height: 250px; width: auto; border-radius: 8px;">`;
+                    currentImgData = e.target.result;
+                    preview.innerHTML = `<img src="${currentImgData}" style="max-height: 200px; width: auto; border-radius: 8px;">`;
                 };
                 reader.readAsDataURL(input.files[0]);
             }
         }
     </script>
 </body>
-
-<script>
-    // 1. 데이터 로드
-    document.addEventListener('DOMContentLoaded', loadNews);
-
-    function showForm(mode, title='', sub='', author='관리자', date='', link='') {
-        document.getElementById('newsFormSection').style.display = 'block';
-        if(mode === 'add') {
-            document.getElementById('newsForm').reset();
-            document.getElementById('newsPreview').innerHTML = "<span>이미지 업로드</span>";
-        } else {
-            document.getElementById('newsTitle').value = title;
-            document.getElementById('newsSubTitle').value = sub;
-            document.getElementById('newsAuthor').value = author;
-            document.getElementById('newsDate').value = date;
-            document.getElementById('newsLink').value = link;
-        }
-        document.getElementById('newsFormSection').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // 2. 저장 기능 (LocalStorage)
-    document.getElementById('newsForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const newsData = {
-            title: document.getElementById('newsTitle').value,
-            sub: document.getElementById('newsSubTitle').value,
-            author: document.getElementById('newsAuthor').value,
-            date: document.getElementById('newsDate').value,
-            link: document.getElementById('newsLink').value,
-            img: document.querySelector('#newsPreview img')?.src || ''
-        };
-
-        let newsList = JSON.parse(localStorage.getItem('newsData') || '[]');
-        newsList.push(newsData);
-        localStorage.setItem('newsData', JSON.stringify(newsList));
-        
-        alert('뉴스가 저장되었습니다.');
-        location.reload(); // 화면 갱신
-    });
-
-    function loadNews() {
-        const newsList = JSON.parse(localStorage.getItem('newsData') || '[]');
-        const tbody = document.querySelector('.partner-table tbody');
-        tbody.innerHTML = ''; // 초기화
-
-        newsList.forEach((news, index) => {
-            tbody.innerHTML += `
-                <tr>
-                    <td><div class="table-img-box"><img src="${news.img || 'https://via.placeholder.com/100'}"></div></td>
-                    <td><strong>${news.title}</strong><br><small>${news.sub}</small></td>
-                    <td>${news.author}<br><small>${news.date}</small></td>
-                    <td><a href="${news.link}" target="_blank">링크 이동</a></td>
-                    <td>
-                        <button class="btn-table-delete" onclick="deleteNews(${index})">삭제</button>
-                    </td>
-                </tr>
-            `;
-        });
-    }
-
-    function deleteNews(index) {
-        let newsList = JSON.parse(localStorage.getItem('newsData'));
-        newsList.splice(index, 1);
-        localStorage.setItem('newsData', JSON.stringify(newsList));
-        loadNews();
-    }
-</script>
 </html>
-
