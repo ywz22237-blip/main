@@ -12,6 +12,17 @@
     <link rel="stylesheet" href="style.css">
     
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        /* 추가적인 버튼 스타일링 */
+        #load-more-btn:hover {
+            background-color: #333 !important;
+            transform: translateY(-2px);
+        }
+        #load-more-btn:disabled {
+            background-color: #ccc !important;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -43,6 +54,12 @@
             <div id="news-list-container" class="news-list">
                 <p style="text-align: center; grid-column: 1/-1; padding: 50px; color: #666;">뉴스를 불러오는 중입니다...</p>
             </div>
+
+            <div id="more-btn-container" style="text-align: center; margin-top: 50px; display: none;">
+                <button id="load-more-btn" onclick="fetchNews()" style="padding: 15px 40px; background-color: #111; color: #fff; border: none; border-radius: 5px; cursor: pointer; font-size: 1rem; font-weight: 500; transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    뉴스 더보기 +
+                </button>
+            </div>
         </div>
     </section>
 
@@ -70,35 +87,51 @@
     </footer>
 
     <script>
-        // 제공해주신 Supabase 정보 적용
         const SUPABASE_URL = 'https://vhmihojfcokhkoxpejuj.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg'; 
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+        let currentPage = 0; 
+        const itemsPerPage = 6; 
+
         async function fetchNews() {
+            const container = document.getElementById('news-list-container');
+            const moreBtnContainer = document.getElementById('more-btn-container');
+            const loadMoreBtn = document.getElementById('load-more-btn');
+
             try {
-                // 1) 서버에서 뉴스 데이터 가져오기 (날짜 최신순)
-                const { data: newsItems, error } = await _supabase
+                // 버튼 상태 변경
+                loadMoreBtn.innerText = "불러오는 중...";
+                loadMoreBtn.disabled = true;
+
+                const start = currentPage * itemsPerPage;
+                const end = start + itemsPerPage - 1;
+
+                // 데이터와 전체 카운트를 함께 가져옴
+                const { data: newsItems, error, count } = await _supabase
                     .from('news_table')
-                    .select('*')
-                    .order('date', { ascending: false });
+                    .select('*', { count: 'exact' })
+                    .order('date', { ascending: false })
+                    .range(start, end);
 
                 if (error) throw error;
 
-                const container = document.getElementById('news-list-container');
-                container.innerHTML = ''; // 로딩 메시지 제거
+                // 처음 로드할 때만 로딩 메시지 삭제
+                if (currentPage === 0) container.innerHTML = '';
 
                 if (!newsItems || newsItems.length === 0) {
-                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 50px;">등록된 최신 소식이 없습니다.</p>';
+                    if (currentPage === 0) {
+                        container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; padding: 50px;">등록된 소식이 없습니다.</p>';
+                    }
+                    moreBtnContainer.style.display = 'none';
                     return;
                 }
 
-                // 2) 데이터를 HTML 구조에 맞게 화면에 뿌리기
+                // 기사 카드 생성
                 newsItems.forEach(item => {
                     const article = document.createElement('article');
                     article.className = 'news-item';
                     
-                    // 링크 버튼 여부 확인
                     const linkButton = item.link_url 
                         ? `<a href="${item.link_url}" target="_blank" class="btn-more">기사 원문 보기 →</a>` 
                         : '';
@@ -119,13 +152,25 @@
                     `;
                     container.appendChild(article);
                 });
+
+                // 전체 개수와 현재까지 불러온 개수를 비교하여 버튼 노출 결정
+                if (count > (currentPage + 1) * itemsPerPage) {
+                    moreBtnContainer.style.display = 'block';
+                    loadMoreBtn.innerText = "뉴스 더보기 +";
+                    loadMoreBtn.disabled = false;
+                    currentPage++; 
+                } else {
+                    moreBtnContainer.style.display = 'none';
+                }
+
             } catch (error) {
-                console.error('데이터 로드 중 오류 발생:', error);
-                document.getElementById('news-list-container').innerHTML = '<p style="text-align: center; grid-column: 1/-1;">소식을 불러오는 중에 오류가 발생했습니다.</p>';
+                console.error('데이터 로드 실패:', error);
+                if (currentPage === 0) {
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1;">오류가 발생했습니다. 잠시 후 다시 시도해주세요.</p>';
+                }
             }
         }
 
-        // 페이지 로드 시 실행
         document.addEventListener('DOMContentLoaded', fetchNews);
     </script>
 </body>
