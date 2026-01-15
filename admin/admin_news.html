@@ -6,6 +6,11 @@
     <title>News 관리 - Admin</title>
     <link rel="stylesheet" href="admin_style.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        .btn-table-edit { background-color: #4a5568; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; margin-right: 5px; }
+        .btn-table-delete { background-color: #e53e3e; color: white; border: none; padding: 6px 10px; border-radius: 4px; cursor: pointer; }
+        #formStatus { font-weight: bold; color: #4299e1; margin-bottom: 10px; display: block; }
+    </style>
 </head>
 <body>
     <div class="admin-wrapper">
@@ -26,66 +31,61 @@
         <main class="main-content">
             <header class="top-header">
                 <h1>News 관리</h1>
-                <div class="user-info">소식을 관리하고 서버에 저장하세요.</div>
+                <div class="user-info">뉴스를 등록하거나 기존 내용을 수정할 수 있습니다.</div>
             </header>
 
             <section class="admin-card-section">
                 <div class="section-title">📰 뉴스 리스트</div>
                 <div class="table-container">
-                    <table class="partner-table">
+                    <table>
                         <thead>
                             <tr>
                                 <th>이미지</th>
                                 <th>제목 / 소제목</th>
                                 <th>작성자 / 날짜</th>
-                                <th>연결 링크</th>
                                 <th>관리</th>
                             </tr>
                         </thead>
                         <tbody id="newsTableBody">
-                            </tbody>
+                            <tr><td colspan="4" style="text-align:center;">데이터 로드 중...</td></tr>
+                        </tbody>
                     </table>
                 </div>
                 <div class="table-actions" style="justify-content: flex-end; margin-top: 15px;">
-                    <button class="btn-save-all" style="background-color: #4299e1;" onclick="showForm()">+ 새 뉴스 작성</button>
+                    <button class="btn-save-all" style="background-color: #4299e1;" onclick="prepareCreate()">+ 새 뉴스 작성</button>
                 </div>
             </section>
 
             <section id="newsFormSection" class="admin-card-section" style="display: none; border-top: 4px solid #4299e1;">
-                <div class="section-title">➕ 뉴스 등록/수정</div>
+                <div class="section-title">📝 <span id="formTitle">뉴스 등록</span></div>
+                <span id="formStatus">신규 작성 모드</span>
                 <form id="newsForm" class="large-form">
+                    <input type="hidden" id="editId">
+                    <input type="hidden" id="currentImgUrl">
+
                     <div class="input-group">
                         <label>뉴스 제목</label>
                         <input type="text" id="newsTitle" class="input-lg" required>
                     </div>
                     <div class="input-group">
                         <label>소제목 (내용 요약)</label>
-                        <textarea id="newsSubTitle" class="input-lg" rows="3"></textarea>
+                        <textarea id="newsSubTitle" class="input-lg" rows="2"></textarea>
                     </div>
                     <div class="input-row-3">
-                        <div class="input-group">
-                            <label>작성자</label>
-                            <input type="text" id="newsAuthor" class="input-lg" value="관리자">
-                        </div>
-                        <div class="input-group">
-                            <label>작성일</label>
-                            <input type="date" id="newsDate" class="input-lg">
-                        </div>
-                        <div class="input-group">
-                            <label>연동 링크 (URL)</label>
-                            <input type="url" id="newsLink" class="input-lg" placeholder="https://...">
-                        </div>
+                        <div class="input-group"><label>작성자</label><input type="text" id="newsAuthor" class="input-lg" value="관리자"></div>
+                        <div class="input-group"><label>작성일</label><input type="date" id="newsDate" class="input-lg" required></div>
+                        <div class="input-group"><label>링크 URL</label><input type="url" id="newsLink" class="input-lg"></div>
                     </div>
                     <div class="input-group">
-                        <label>대표 이미지</label>
-                        <div class="upload-box-lg" onclick="document.getElementById('newsFile').click()">
+                        <label>대표 이미지 (변경 시에만 업로드)</label>
+                        <div class="upload-box-lg" onclick="document.getElementById('newsFile').click()" style="cursor:pointer; border:2px dashed #ccc; padding:15px; text-align:center;">
                             <input type="file" id="newsFile" accept="image/*" hidden onchange="previewNewsImage(this)">
-                            <div id="newsPreview"><span>클릭하여 이미지 업로드</span></div>
+                            <div id="newsPreview">이미지 업로드 (클릭)</div>
                         </div>
                     </div>
                     <div class="form-actions-lg">
-                        <button type="button" class="btn-cancel-lg" onclick="hideForm()">창 닫기</button>
-                        <button type="submit" class="btn-save-lg">서버에 저장하기</button>
+                        <button type="button" class="btn-cancel-lg" onclick="hideForm()">취소</button>
+                        <button type="submit" class="btn-save-lg" id="submitBtn">서버에 저장하기</button>
                     </div>
                 </form>
             </section>
@@ -97,56 +97,96 @@
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // 1. 뉴스 불러오기
+        // 뉴스 불러오기
         async function loadNews() {
             const { data, error } = await _supabase.from('news_table').select('*').order('date', { ascending: false });
-            if (error) return console.error(error);
+            if (error) return;
 
             const tbody = document.getElementById('newsTableBody');
             tbody.innerHTML = data.map(news => `
                 <tr>
-                    <td><div class="table-img-box"><img src="${news.img_url || ''}" style="width:60px;"></div></td>
-                    <td><strong>${news.title}</strong><br><small>${news.sub_title}</small></td>
+                    <td><img src="${news.img_url || ''}" style="width:50px; border-radius:4px;"></td>
+                    <td><strong>${news.title}</strong></td>
                     <td>${news.author}<br><small>${news.date}</small></td>
-                    <td><a href="${news.link_url}" target="_blank">링크🔗</a></td>
-                    <td><button class="btn-table-delete" onclick="deleteNews('${news.id}')">삭제</button></td>
+                    <td>
+                        <button class="btn-table-edit" onclick='prepareEdit(${JSON.stringify(news)})'>수정</button>
+                        <button class="btn-table-delete" onclick="deleteNews(${news.id})">삭제</button>
+                    </td>
                 </tr>
             `).join('');
         }
 
-        // 2. 뉴스 저장 (이미지 업로드 포함)
+        // 수정 모드 세팅
+        function prepareEdit(news) {
+            showForm();
+            document.getElementById('formTitle').innerText = "뉴스 수정";
+            document.getElementById('formStatus').innerText = "수정 모드 (ID: " + news.id + ")";
+            document.getElementById('submitBtn').innerText = "수정 내용 저장";
+            
+            document.getElementById('editId').value = news.id;
+            document.getElementById('newsTitle').value = news.title;
+            document.getElementById('newsSubTitle').value = news.sub_title;
+            document.getElementById('newsAuthor').value = news.author;
+            document.getElementById('newsDate').value = news.date;
+            document.getElementById('newsLink').value = news.link_url;
+            document.getElementById('currentImgUrl').value = news.img_url;
+            document.getElementById('newsPreview').innerHTML = `<img src="${news.img_url}" style="height:80px;">`;
+        }
+
+        // 신규 작성 모드 세팅
+        function prepareCreate() {
+            showForm();
+            document.getElementById('newsForm').reset();
+            document.getElementById('editId').value = "";
+            document.getElementById('currentImgUrl').value = "";
+            document.getElementById('formTitle').innerText = "뉴스 등록";
+            document.getElementById('formStatus').innerText = "신규 작성 모드";
+            document.getElementById('submitBtn').innerText = "서버에 저장하기";
+            document.getElementById('newsPreview').innerHTML = "이미지 업로드 (클릭)";
+        }
+
+        // 저장 (등록 + 수정 공용)
         document.getElementById('newsForm').addEventListener('submit', async (e) => {
             e.preventDefault();
+            const editId = document.getElementById('editId').value;
             const file = document.getElementById('newsFile').files[0];
-            let imageUrl = "";
+            let imageUrl = document.getElementById('currentImgUrl').value;
 
+            // 새 이미지가 있으면 업로드
             if (file) {
                 const fileName = `${Date.now()}_${file.name}`;
                 const { data: upData, error: upError } = await _supabase.storage.from('news_images').upload(fileName, file);
-                if (upError) return alert("이미지 업로드 실패: " + upError.message);
-                
-                const { data: urlData } = _supabase.storage.from('news_images').getPublicUrl(fileName);
-                imageUrl = urlData.publicUrl;
+                if (upError) return alert("이미지 업로드 실패");
+                imageUrl = _supabase.storage.from('news_images').getPublicUrl(fileName).data.publicUrl;
             }
 
-            const { error: dbError } = await _supabase.from('news_table').insert([{
+            const rowData = {
                 title: document.getElementById('newsTitle').value,
                 sub_title: document.getElementById('newsSubTitle').value,
                 author: document.getElementById('newsAuthor').value,
                 date: document.getElementById('newsDate').value,
                 link_url: document.getElementById('newsLink').value,
                 img_url: imageUrl
-            }]);
+            };
 
-            if (dbError) alert("저장 실패: " + dbError.message);
-            else { alert("저장 성공!"); location.reload(); }
+            let result;
+            if (editId) {
+                // 수정 모드
+                result = await _supabase.from('news_table').update(rowData).eq('id', editId);
+            } else {
+                // 등록 모드
+                result = await _supabase.from('news_table').insert([rowData]);
+            }
+
+            if (result.error) alert("저장 실패: " + result.error.message);
+            else { alert("저장되었습니다!"); location.reload(); }
         });
 
-        // 3. 뉴스 삭제
         async function deleteNews(id) {
-            if (!confirm("정말 삭제하시겠습니까?")) return;
-            await _supabase.from('news_table').delete().eq('id', id);
-            loadNews();
+            if (confirm("정말 삭제하시겠습니까?")) {
+                const { error } = await _supabase.from('news_table').delete().eq('id', id);
+                if (!error) { alert("삭제되었습니다."); loadNews(); }
+            }
         }
 
         function showForm() { document.getElementById('newsFormSection').style.display = 'block'; }
@@ -154,11 +194,10 @@
         function previewNewsImage(input) {
             if (input.files && input.files[0]) {
                 const reader = new FileReader();
-                reader.onload = e => { document.getElementById('newsPreview').innerHTML = `<img src="${e.target.result}" style="max-height:150px;">`; };
+                reader.onload = e => { document.getElementById('newsPreview').innerHTML = `<img src="${e.target.result}" style="height:80px;">`; };
                 reader.readAsDataURL(input.files[0]);
             }
         }
-
         window.onload = loadNews;
     </script>
 </body>
