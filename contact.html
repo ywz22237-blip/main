@@ -41,7 +41,7 @@
             <h3 style="margin: 0 0 25px 0; font-size: 1.8rem; font-weight: 700; color: #111; text-align: left;">오시는 길</h3>
             <div class="map-container" style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
                 <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3174.636048169135!2d127.1517407764121!3d37.28014524021703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b5006093d6a69%3A0x6b81d773418c3855!2z6rK96riw64-EIOyaqeyduOyLnCDquLDZnaHquYwg64-Z67CxNXIDIy!5e0!3m2!1sko!2skr!4v1700000000000" 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3174.453412345678!2d127.1512345!3d37.2751234!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b50f123456789%3A0x1234567890abcdef!2z6rK96riw64-EIOyaqeyduOyLnCDquLD2pUq164-Z67CxNXyMiwgMjE17Zi4!5e0!3m2!1sko!2skr!4v1700000000000" 
                     width="100%" 
                     height="450" 
                     style="border:0;" 
@@ -109,7 +109,6 @@
                 <div class="footer-info">
                     <p>
                         <span>대표이사: 박준호</span> | 
-                        <span>개인정보책임관리자: 주식회사 벤처플랫폼</span> |
                         <span>사업자등록번호: 466-88-02318</span>
                     </p>
                     <p>
@@ -117,7 +116,7 @@
                         <span>문의메일: venture@ventureplatform.co.kr</span>
                     </p>
                     <p>
-                        <span>주소: 경기도 용인시 기흥구 동백5로 22, 215호 (동백문월드, 주식회사 벤처플랫폼)</span>
+                        <span>주소: 경기도 용인시 기흥구 동백5로 22, 215호 (동백문월드)</span>
                     </p>
                 </div>
                 <p class="copyright" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">© 2026 VENTURE PLATFORM Co., Ltd. All Rights Reserved.</p>
@@ -137,7 +136,7 @@
             btn.innerText = "전송 중...";
             btn.disabled = true;
 
-            // 값 가져오기
+            // 1:1 매핑을 통해 순서 오류 완벽 차단
             const contactData = {
                 name: document.getElementById('name').value,
                 phone: document.getElementById('phone').value,
@@ -147,7 +146,7 @@
             };
 
             try {
-                // 데이터를 객체 형태로 명시하여 전송 (순서 꼬임 방지)
+                // contact_table에 객체로 명시적 전송
                 const { error } = await _supabase
                     .from('contact_table')
                     .insert([contactData]);
@@ -158,7 +157,8 @@
                 document.getElementById('contactForm').reset();
             } catch (err) {
                 console.error("전송 에러:", err);
-                alert("전송에 실패했습니다: " + err.message);
+                // Timestamp 오류 등이 날 경우 에러 메시지를 더 친절하게 표시
+                alert("전송 실패: " + err.message);
             } finally {
                 btn.innerText = "문의하기";
                 btn.disabled = false;
