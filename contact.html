@@ -3,31 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VCRoute | 주식회사 벤처플랫폼</title>
+    <title>Contact | 주식회사 벤처플랫폼</title>
     
     <link rel="icon" href="image/favicon.png" type="image/png">
     <link rel="apple-touch-icon" href="image/favicon.png">
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header>
-    <nav class="navbar">
-        <div class="logo">
-            <a href="index.html">
-                <img src="image/logo1.png" alt="VENTURE PLATFORM">
-            </a>
-        </div>
-        <ul class="nav-links">
-            <li><a href="index.html">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="service.html">Service</a></li>
-            <li><a href="news.html">News</a></li>
-            <li><a href="contact.html">Contact</a></li>
-        </ul>
-    </nav>
-</header>
+        <nav class="navbar">
+            <div class="logo">
+                <a href="index.html">
+                    <img src="image/logo1.png" alt="VENTURE PLATFORM">
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="service.html">Service</a></li>
+                <li><a href="news.html">News</a></li>
+                <li><a href="contact.html" class="active">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
 
     <section class="hero contact-hero">
         <h1>Get in <span>Touch</span></h1>
@@ -36,24 +38,24 @@
 
     <section class="map-section" style="padding: 80px 0; background-color: #fff;">
         <div class="contact-map-wrapper" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
-            
             <h3 style="margin: 0 0 25px 0; font-size: 1.8rem; font-weight: 700; color: #111; text-align: left;">오시는 길</h3>
-            
-         <div class="map-container">
-    <iframe 
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3171.6934441584285!2d127.15340057640244!3d37.27869684063236!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b5976f00122e1%3A0x63345470d069b616!2z6rK96riw64-EIOyaqeycompleteCDquLDtnaHqtawg64-Z67CxNeuhnCAyMg!5e0!3m2!1sko!2skr!4v1709192345678!5m2!1sko!2skr" 
-        width="100%" 
-        height="450" 
-        style="border:0;" 
-        allowfullscreen="" 
-        loading="lazy" 
-        referrerpolicy="no-referrer-when-downgrade">
-    </iframe>
-
+            <div class="map-container" style="border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+                <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3174.636048169135!2d127.1517407764121!3d37.28014524021703!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x357b5006093d6a69%3A0x6b81d773418c3855!2z6rK96riw64-EIOyaqeyduOyLnCDquLDZnaHquYwg64-Z67CxNXIDIy!5e0!3m2!1sko!2skr!4v1700000000000" 
+                    width="100%" 
+                    height="450" 
+                    style="border:0;" 
+                    allowfullscreen="" 
+                    loading="lazy" 
+                    referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
     </section>
 
     <section class="section">
-        <div class="container"> <div class="contact-grid">
+        <div class="container"> 
+            <div class="contact-grid">
                 <div class="contact-info">
                     <h2>Contact Information</h2>
                     <div class="info-item">
@@ -72,20 +74,28 @@
                 </div>
 
                 <div class="contact-form-container">
-                    <form class="contact-form">
+                    <form id="contactForm" class="contact-form">
                         <div class="form-group">
                             <label>성함/기업명</label>
-                            <input type="text" placeholder="이름을 입력해주세요">
+                            <input type="text" id="name" placeholder="이름을 입력해주세요" required>
+                        </div>
+                        <div class="form-group">
+                            <label>연락처</label>
+                            <input type="tel" id="phone" placeholder="010-0000-0000" required>
                         </div>
                         <div class="form-group">
                             <label>이메일</label>
-                            <input type="email" placeholder="email@example.com">
+                            <input type="email" id="email" placeholder="email@example.com" required>
+                        </div>
+                        <div class="form-group">
+                            <label>문의 제목</label>
+                            <input type="text" id="subject" placeholder="문의 제목을 입력해주세요" required>
                         </div>
                         <div class="form-group">
                             <label>문의 내용</label>
-                            <textarea rows="5" placeholder="문의하실 내용을 상세히 적어주세요"></textarea>
+                            <textarea id="message" rows="5" placeholder="문의하실 내용을 상세히 적어주세요" required></textarea>
                         </div>
-                        <button type="submit" class="btn-main">문의하기</button>
+                        <button type="submit" id="submitBtn" class="btn-main">문의하기</button>
                     </form>
                 </div>
             </div>
@@ -96,7 +106,6 @@
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
             <div class="footer-content">
                 <h2 class="footer-logo">주식회사 벤처플랫폼</h2>
-                
                 <div class="footer-info">
                     <p>
                         <span>대표이사: 박준호</span> | 
@@ -111,10 +120,50 @@
                         <span>주소: 경기도 용인시 기흥구 동백5로 22, 215호 (동백문월드, 주식회사 벤처플랫폼)</span>
                     </p>
                 </div>
-                
                 <p class="copyright" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">© 2026 VENTURE PLATFORM Co., Ltd. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        const SUPABASE_URL = 'https://vhmihojfcokhkoxpejuj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        document.getElementById('contactForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('submitBtn');
+            
+            btn.innerText = "전송 중...";
+            btn.disabled = true;
+
+            // 값 가져오기
+            const contactData = {
+                name: document.getElementById('name').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                subject: document.getElementById('subject').value,
+                message: document.getElementById('message').value
+            };
+
+            try {
+                // 데이터를 객체 형태로 명시하여 전송 (순서 꼬임 방지)
+                const { error } = await _supabase
+                    .from('contact_table')
+                    .insert([contactData]);
+
+                if (error) throw error;
+
+                alert("문의가 성공적으로 전달되었습니다. 곧 연락드리겠습니다!");
+                document.getElementById('contactForm').reset();
+            } catch (err) {
+                console.error("전송 에러:", err);
+                alert("전송에 실패했습니다: " + err.message);
+            } finally {
+                btn.innerText = "문의하기";
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
