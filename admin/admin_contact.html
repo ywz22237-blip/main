@@ -35,7 +35,7 @@
                     <table class="partner-table">
                         <thead>
                             <tr>
-                                <th style="width: 100px;">날짜</th>
+                                <th style="width: 130px;">날짜/시간</th>
                                 <th style="width: 150px;">이름/연락처</th>
                                 <th style="width: 200px;">제목</th>
                                 <th>문의 내용</th>
@@ -74,23 +74,50 @@
                 return;
             }
 
-            tbody.innerHTML = data.map(c => `
-                <tr>
-                    <td style="font-size: 0.85rem; color: #666;">${new Date(c.created_at).toLocaleDateString()}</td>
-                    <td>
-                        <strong>${c.name}</strong><br>
-                        <small style="color: #4299e1;">${c.phone}</small><br>
-                        <small style="color: #888;">${c.email}</small>
-                    </td>
-                    <td style="font-weight: 600;">${c.subject}</td>
-                    <td>
-                        <div style="max-width: 400px; white-space: pre-wrap; font-size: 0.9rem; color: #444; line-height: 1.4;">${c.message}</div>
-                    </td>
-                    <td>
-                        <button onclick="deleteContact(${c.id})" style="background:#e53e3e; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">삭제</button>
-                    </td>
-                </tr>
-            `).join('');
+            tbody.innerHTML = data.map(c => {
+                // 날짜 정보 처리
+                let dateDisplay = "날짜 없음";
+                let timeDisplay = "";
+
+                if (c.created_at) {
+                    const date = new Date(c.created_at);
+                    if (!isNaN(date.getTime())) {
+                        // 첫 번째 줄: 연.월.일
+                        dateDisplay = date.toLocaleDateString('ko-KR', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                        // 두 번째 줄: 오전/오후 시:분
+                        timeDisplay = date.toLocaleTimeString('ko-KR', {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+                    }
+                }
+
+                return `
+                    <tr>
+                        <td style="text-align: center; line-height: 1.5;">
+                            <div style="font-size: 0.9rem; font-weight: 600; color: #333;">${dateDisplay}</div>
+                            <div style="font-size: 0.75rem; color: #888;">${timeDisplay}</div>
+                        </td>
+                        <td>
+                            <strong>${c.name}</strong><br>
+                            <small style="color: #4299e1;">${c.phone}</small><br>
+                            <small style="color: #888;">${c.email}</small>
+                        </td>
+                        <td style="font-weight: 600;">${c.subject}</td>
+                        <td>
+                            <div style="max-width: 400px; white-space: pre-wrap; font-size: 0.9rem; color: #444; line-height: 1.4;">${c.message}</div>
+                        </td>
+                        <td>
+                            <button onclick="deleteContact(${c.id})" style="background:#e53e3e; color:white; border:none; padding:5px 10px; border-radius:4px; cursor:pointer;">삭제</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
         }
 
         // 문의 삭제하기

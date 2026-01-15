@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>관리자 대시보드</title>
+    <title>관리자 대시보드 | 벤처플랫폼</title>
     <link rel="stylesheet" href="admin_style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="admin-wrapper">
@@ -12,15 +13,15 @@
             <div class="sidebar-header">
                 <h2>ADMIN</h2>
             </div>
- <nav class="sidebar-nav">
-    <ul>
-        <li><a href="index_admin.html">📊 대시보드</a></li>
-        <li><a href="admin_about.html">ℹ️ About 관리</a></li>
-        <li><a href="admin_service.html">🛠 Service 관리</a></li>
-        <li><a href="admin_news.html">📰 News 관리</a></li>
-        <li><a href="admin_contact.html">📞 Contact 관리</a></li>
-    </ul>
-</nav>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index_admin.html" class="active">📊 대시보드</a></li>
+                    <li><a href="admin_about.html">ℹ️ About 관리</a></li>
+                    <li><a href="admin_service.html">🛠 Service 관리</a></li>
+                    <li><a href="admin_news.html">📰 News 관리</a></li>
+                    <li><a href="admin_contact.html">📞 Contact 관리</a></li>
+                </ul>
+            </nav>
             <div class="sidebar-footer">
                 <a href="../index.html" class="btn-exit">🏠 사이트 나가기</a>
             </div>
@@ -29,54 +30,102 @@
         <main class="main-content">
             <header class="top-header">
                 <h1>Dashboard Summary</h1>
-                <div class="user-info">관리자님, 환영합니다.</div>
+                <div class="user-info">관리자님, 환영합니다. 오늘의 현황을 확인하세요.</div>
             </header>
 
-            <section class="dashboard-grid">
-                <div class="stat-card blue">
-                    <div class="stat-label">오늘 방문자</div>
-                    <div class="stat-value">124</div>
+            <section class="stats-section" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px;">
+                <div class="admin-card" style="padding: 25px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="color: #718096; font-size: 0.9rem; margin-bottom: 10px;">📰 등록된 뉴스</div>
+                    <div id="newsCount" style="font-size: 1.8rem; font-weight: 700; color: #2d3748;">불러오는 중...</div>
                 </div>
-                <div class="stat-card green">
-                    <div class="stat-label">파트너 로고</div>
-                    <div class="stat-value">8개</div>
-                </div>
-                <div class="stat-card orange">
-                    <div class="stat-label">새 문의사항</div>
-                    <div class="stat-value">3건</div>
+                <div class="admin-card" style="padding: 25px; background: #fff; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="color: #718096; font-size: 0.9rem; margin-bottom: 10px;">📬 새로운 문의</div>
+                    <div id="contactCount" style="font-size: 1.8rem; font-weight: 700; color: #4299e1;">불러오는 중...</div>
                 </div>
             </section>
 
-            <section class="recent-activity">
-                <div class="section-title">최근 업데이트 현황</div>
+            <section class="admin-card-section">
+                <div class="section-title" style="display: flex; justify-content: space-between; align-items: center;">
+                    <span>📞 최근 문의 내역 (최신 5건)</span>
+                    <a href="admin_contact.html" style="font-size: 0.8rem; color: #4299e1; text-decoration: none;">전체보기 ></a>
+                </div>
                 <div class="table-container">
-                    <table>
+                    <table class="partner-table">
                         <thead>
                             <tr>
-                                <th>카테고리</th>
-                                <th>활동 내용</th>
-                                <th>날짜</th>
-                                <th>상태</th>
+                                <th style="width: 130px;">날짜/시간</th>
+                                <th style="width: 150px;">이름/연락처</th>
+                                <th>문의 제목</th>
+                                <th style="width: 100px;">상태</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>About</td>
-                                <td>새로운 파트너사 로고 추가</td>
-                                <td>2024-05-20</td>
-                                <td><span class="badge success">완료</span></td>
-                            </tr>
-                            <tr>
-                                <td>Contact</td>
-                                <td>제휴 문의 메일 접수</td>
-                                <td>2024-05-19</td>
-                                <td><span class="badge warning">대기중</span></td>
-                            </tr>
+                        <tbody id="recentContactTable">
+                            <tr><td colspan="4" style="text-align:center;">데이터를 불러오는 중...</td></tr>
                         </tbody>
                     </table>
                 </div>
             </section>
         </main>
     </div>
+
+    <script>
+        const SUPABASE_URL = 'https://vhmihojfcokhkoxpejuj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadDashboardData() {
+            try {
+                // 1. 뉴스 총 개수 가져오기
+                const { count: newsCount, error: newsError } = await _supabase
+                    .from('news_table')
+                    .select('*', { count: 'exact', head: true });
+                
+                if (!newsError) document.getElementById('newsCount').innerText = `${newsCount || 0}개`;
+
+                // 2. 문의 총 개수 및 최근 5건 가져오기
+                const { data: contacts, count: contactCount, error: contactError } = await _supabase
+                    .from('contact_table')
+                    .select('*', { count: 'exact' })
+                    .order('created_at', { ascending: false })
+                    .limit(5);
+
+                if (contactError) throw contactError;
+
+                document.getElementById('contactCount').innerText = `${contactCount || 0}건`;
+
+                // 3. 최근 문의 목록 테이블 업데이트
+                const tbody = document.getElementById('recentContactTable');
+                if (!contacts || contacts.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">도착한 문의가 없습니다.</td></tr>';
+                } else {
+                    tbody.innerHTML = contacts.map(c => {
+                        const date = new Date(c.created_at);
+                        const dateStr = date.toLocaleDateString('ko-KR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+                        const timeStr = date.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true });
+
+                        return `
+                            <tr>
+                                <td style="text-align: center; line-height: 1.5;">
+                                    <div style="font-size: 0.85rem; font-weight: 600; color: #333;">${dateStr}</div>
+                                    <div style="font-size: 0.75rem; color: #999;">${timeStr}</div>
+                                </td>
+                                <td>
+                                    <strong>${c.name}</strong><br>
+                                    <small style="color: #888;">${c.phone}</small>
+                                </td>
+                                <td style="font-weight: 500;">${c.subject}</td>
+                                <td><span class="badge success" style="background: #ebf8ff; color: #3182ce; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">신규</span></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+            } catch (err) {
+                console.error('데이터 로드 실패:', err);
+            }
+        }
+
+        window.onload = loadDashboardData;
+    </script>
 </body>
 </html>
