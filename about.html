@@ -10,6 +10,8 @@
     
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
     <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <header>
@@ -52,53 +54,37 @@
         </div>
     </section>
 
-  <section class="section" style="background-color: #fcfcfc; padding: 100px 0;">
-    <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
-        <h2 class="section-title" style="margin: 0 0 50px 0; font-size: 1.8rem; font-weight: 700; color: #111; text-align: left;">CI</h2>
-        
-        <div style="text-align: center; max-width: 1100px; margin: 0 auto;">
-            <div class="ci-horizontal-box" style="display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; padding: 70px 50px; border-radius: 24px; border: 1px solid #eee; margin-bottom: 60px; gap: 80px;">
-                
-                <div style="flex: 0 1 auto; text-align: center;">
-                    <img src="image/logo1.png" alt="벤처플랫폼 메인 로고" style="width: 280px; height: auto; display: block; margin-bottom: 20px;">
-                    <span style="display: inline-block; padding: 6px 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; color: #666; font-size: 0.85rem; font-weight: 600;">Main Logo</span>
+    <section class="section" style="background-color: #fcfcfc; padding: 100px 0;">
+        <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
+            <h2 class="section-title" style="margin: 0 0 50px 0; font-size: 1.8rem; font-weight: 700; color: #111; text-align: left;">CI</h2>
+            <div style="text-align: center; max-width: 1100px; margin: 0 auto;">
+                <div class="ci-horizontal-box" style="display: flex; align-items: center; justify-content: center; background-color: #f8f9fa; padding: 70px 50px; border-radius: 24px; border: 1px solid #eee; margin-bottom: 60px; gap: 80px;">
+                    <div style="flex: 0 1 auto; text-align: center;">
+                        <img src="image/logo1.png" alt="벤처플랫폼 메인 로고" style="width: 280px; height: auto; display: block; margin-bottom: 20px;">
+                        <span style="display: inline-block; padding: 6px 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; color: #666; font-size: 0.85rem; font-weight: 600;">Main Logo</span>
+                    </div>
+                    <div style="width: 1px; height: 120px; background: linear-gradient(to bottom, transparent, #ccc, transparent);"></div>
+                    <div style="flex: 0 1 auto; text-align: center;">
+                        <img src="image/logo2.jpeg" alt="벤처플랫폼 심볼 로고" style="width: 280px; height: auto; display: block; margin-bottom: 20px;">
+                        <span style="display: inline-block; padding: 6px 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; color: #666; font-size: 0.85rem; font-weight: 600;">Symbol Logo</span>
+                    </div>
                 </div>
-
-                <div style="width: 1px; height: 120px; background: linear-gradient(to bottom, transparent, #ccc, transparent);"></div>
-
-                <div style="flex: 0 1 auto; text-align: center;">
-                    <img src="image/logo2.jpeg" alt="벤처플랫폼 심볼 로고" style="width: 280px; height: auto; display: block; margin-bottom: 20px;">
-                    <span style="display: inline-block; padding: 6px 15px; background: #fff; border: 1px solid #ddd; border-radius: 6px; color: #666; font-size: 0.85rem; font-weight: 600;">Symbol Logo</span>
+                <div style="max-width: 850px; margin: 0 auto;">
+                    <p style="font-size: 19px; color: #444; line-height: 1.9; font-weight: 500; letter-spacing: -0.5px;">
+                        벤처플랫폼은 단순한 컨설팅을 넘어 기업의 생존과 직결된 자금 유치를 돕는 전략적 파트너입니다. 
+                        차별화된 가치 평가 시스템과 광범위한 투자사 네트워크를 통해 기업의 성공을 현실로 만듭니다.
+                    </p>
                 </div>
-                
-            </div>
-
-            <div style="max-width: 850px; margin: 0 auto;">
-                <p style="font-size: 19px; color: #444; line-height: 1.9; font-weight: 500; letter-spacing: -0.5px;">
-                    벤처플랫폼은 단순한 컨설팅을 넘어 기업의 생존과 직결된 자금 유치를 돕는 전략적 파트너입니다. 
-                    차별화된 가치 평가 시스템과 광범위한 투자사 네트워크를 통해 기업의 성공을 현실로 만듭니다.
-                </p>
             </div>
         </div>
-    </div>
-</section>
+    </section>
 
     <section class="partners-section" style="padding: 80px 0;">
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
             <h2 class="section-title" style="margin: 0 0 40px 0; font-size: 1.8rem; font-weight: 700; color: #111; text-align: left;">Our Partners</h2>
-            <div class="partner-grid">
-                <div class="partner-item"><img src="image/partner_1.png" alt="Partner 1"></div>
-                <div class="partner-item"><img src="image/partner_2.png" alt="Partner 2"></div>
-                <div class="partner-item"><img src="image/partner_3.png" alt="Partner 3"></div>
-                <div class="partner-item"><img src="image/partner_4.png" alt="Partner 4"></div>
-                <div class="partner-item"><img src="image/partner_5.png" alt="Partner 5"></div>
-                <div class="partner-item"><img src="image/partner_6.png" alt="Partner 6"></div>
-                <div class="partner-item"><img src="image/partner_7.png" alt="Partner 7"></div>
-                <div class="partner-item"><img src="image/partner_8.png" alt="Partner 8"></div>
-                <div class="partner-item"><img src="image/partner_9.png" alt="Partner 9"></div>
-                <div class="partner-item"><img src="image/partner_10.png" alt="Partner 10"></div>
-                <div class="partner-item"><img src="image/partner_11.png" alt="Partner 11"></div>
-                <div class="partner-item"><img src="image/partner_12.png" alt="Partner 12"></div>
+            
+            <div class="partner-grid" id="partner-list">
+                <p style="text-align: center; grid-column: 1/-1; padding: 50px; color: #999;">파트너사를 불러오는 중입니다...</p>
             </div>
         </div>
     </section>
@@ -107,25 +93,54 @@
         <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 40px;">
             <div class="footer-content">
                 <h2 class="footer-logo">주식회사 벤처플랫폼</h2>
-                
                 <div class="footer-info">
-                    <p>
-                        <span>대표이사: 박준호</span> | 
-                        <span>개인정보책임관리자: 주식회사 벤처플랫폼</span> |
-                        <span>사업자등록번호: 466-88-02318</span>
-                    </p>
-                    <p>
-                        <span>문의전화: 0502-1923-4562</span> | 
-                        <span>문의메일: venture@ventureplatform.co.kr</span>
-                    </p>
-                    <p>
-                        <span>주소: 경기도 용인시 기흥구 동백5로 22, 215호 (동백문월드, 주식회사 벤처플랫폼)</span>
-                    </p>
+                    <p><span>대표이사: 박준호</span> | <span>사업자등록번호: 466-88-02318</span></p>
+                    <p>© 2026 VENTURE PLATFORM Co., Ltd. All Rights Reserved.</p>
                 </div>
-                
-                <p class="copyright" style="margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">© 2026 VENTURE PLATFORM Co., Ltd. All Rights Reserved.</p>
             </div>
         </div>
     </footer>
+
+    <script>
+        // Supabase 설정
+        const SUPABASE_URL = 'https://vhmihojfcokhkoxpejuj.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZobWlob2pmY29raGtveHBlanVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njg0Njg1OTMsImV4cCI6MjA4NDA0NDU5M30.k5O_GS11jn-FJ4XU1aR2PgpSplBAe984WsSxEp4oshg'; 
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function fetchPartners() {
+            try {
+                // about_table에서 데이터 가져오기
+                const { data: partners, error } = await _supabase
+                    .from('about_table')
+                    .select('*')
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                const container = document.getElementById('partner-list');
+                container.innerHTML = ''; // 로딩 메시지 비우기
+
+                if (!partners || partners.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; grid-column: 1/-1; color: #999;">등록된 파트너사가 없습니다.</p>';
+                    return;
+                }
+
+                // 가져온 데이터를 HTML로 변환하여 삽입
+                partners.forEach(p => {
+                    const div = document.createElement('div');
+                    div.className = 'partner-item';
+                    div.innerHTML = `<img src="${p.logo_url}" alt="${p.name}" title="${p.name}">`;
+                    container.appendChild(div);
+                });
+
+            } catch (err) {
+                console.error('파트너 로드 실패:', err);
+                document.getElementById('partner-list').innerHTML = '<p style="text-align: center; grid-column: 1/-1;">데이터를 불러오지 못했습니다.</p>';
+            }
+        }
+
+        // 페이지 로드 시 실행
+        document.addEventListener('DOMContentLoaded', fetchPartners);
+    </script>
 </body>
 </html>
