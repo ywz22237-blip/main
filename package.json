@@ -1,0 +1,12 @@
+{
+  "name": "venture-platform",
+  "version": "1.0.0",
+  "description": "VCroute 회사 홈페이지 (정적 서버)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
